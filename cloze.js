@@ -9,10 +9,16 @@ var Cloze = function(cloze, partial) {
     this.printPartial = function() {
         console.log(this.partial);
     }
+
+    this.printFull = function() {
+        var answer = this.partial.replace('[cloze]', this.cloze);
+        console.log(answer);
+
+    }
 }
 
-var card4 = new Cloze('Liger', 'A half man, half tiger is called a ');
+var card4 = new Cloze('Liger', 'A half man, half tiger is called a [cloze]');
 
-card4.printPartial();
+card4.printFull();
 
 module.exports = Cloze;
