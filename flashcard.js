@@ -49,7 +49,29 @@ function createBasicCards() {
 
 function createClozeCards() {
 
-    console.log('Too cloze for comfort, heh heh!');
+    inquirer.prompt([{
+        name: "partial",
+        message: "Enter the partial sentence, replacing the missing word using the following format: 'I cannot tell a [cloze]': ",
+        validate: function(value) {
+
+            if (value.indexOf('[cloze]') > -1) {
+                return true;
+            }
+            return 'Please replace a word in the sentence with "[cloze]"'
+        }
+    }, {
+        name: "cloze",
+        message: "Enter the missing word: "
+
+    }]).then(function(answers) {
+
+        var card = JSON.stringify(answers);
+
+        appendToClozeLog(card + ",");
+        // readTheCards();
+        createAnotherClozeCard();
+
+    });
 };
 
 function testMyKnowledge() {
@@ -66,6 +88,14 @@ function appendToLog(info) {
     });
 }
 
+function appendToClozeLog(info) {
+    var f = 'cloze-log.txt';
+
+    fs.appendFile(f, info, function(err) {
+        if (err)
+            console.error(err);
+    });
+}
 var makeMore = {
     //Prompt to find out if user wants to play again before exiting program (default is yes)
     type: 'confirm',
@@ -87,8 +117,29 @@ function createAnotherCard() {
     })
 }
 
+function createAnotherClozeCard() {
+    //Prompts user to go again, then either restarts or exits program
+    inquirer.prompt(makeMore).then(function(user) {
+        if (user.makeMore) {
+            createClozeCards();
+        } else {
+
+            readTheClozeCards();
+
+        }
+    })
+}
+
+
 function readTheCards() {
     fs.readFile('log.txt', "utf8", function(error, data) {
+        console.log(data);
+
+    });
+};
+
+function readTheClozeCards() {
+    fs.readFile('cloze-log.txt', "utf8", function(error, data) {
         console.log(data);
 
     });
