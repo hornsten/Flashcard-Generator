@@ -13,7 +13,7 @@ function flashcards() {
             type: 'list',
             name: 'userType',
             message: 'What would you like to do?',
-            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge']
+            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge']
         }
 
     ]).then(function(choice) {
@@ -24,6 +24,8 @@ function flashcards() {
             createClozeCards();
         } else if (choice.userType === 'test-my-knowledge') {
             testMyKnowledge(0);
+        } else if (choice.userType === 'test-my-cloze-knowledge') {
+            testMyClozeKnowledge(0);
         }
     });
 }
@@ -43,16 +45,13 @@ function createBasicCards() {
         var card = new SimpleCard(answers.front, answers.back);
 
         cardArray.push(card);
-
-        // var card = JSON.stringify(answers, null, ' ');
-
-        // appendToLog(card + ",");
-        // readTheCards();
         createAnotherCard();
 
     });
 
 };
+
+var clozeArray = [];
 
 function createClozeCards() {
 
@@ -72,10 +71,10 @@ function createClozeCards() {
 
     }]).then(function(answers) {
 
-        var card = JSON.stringify(answers, null, ' ');
+        var card = new Cloze(answers.partial, answers.cloze);
 
-        appendToClozeLog(card + ",");
-        // readTheCards();
+        clozeArray.push(card);
+
         createAnotherClozeCard();
 
     });
@@ -106,6 +105,44 @@ function testMyKnowledge(x) {
                     wrong++;
                     x++;
                     testMyKnowledge(x);
+                }
+
+            })
+
+        } else {
+            console.log('Here\'s how you did: ');
+            console.log('correct: ' + correct);
+            console.log('wrong: ' + wrong);
+
+        }
+    });
+};
+
+function testMyClozeKnowledge(x) {
+
+    fs.readFile('cloze-log.txt', "utf8", function(error, data) {
+
+        var jsonContent = JSON.parse(data);
+
+
+        if (x < jsonContent.length) {
+
+            inquirer.prompt([{
+                name: "question",
+                message: jsonContent[x].partial
+
+            }]).then(function(answers) {
+
+                if (answers.question.toLowerCase().indexOf(jsonContent[x].cloze.toLowerCase()) > -1) {
+                    console.log('Correct!');
+                    correct++;
+                    x++;
+                    testMyClozeKnowledge(x);
+                } else {
+                    console.log('Incorrect. The correct answer is ' + jsonContent[x].cloze);
+                    wrong++;
+                    x++;
+                    testMyClozeKnowledge(x);
                 }
 
             })
@@ -165,7 +202,7 @@ function createAnotherClozeCard() {
         if (user.makeMore) {
             createClozeCards();
         } else {
-
+            appendToClozeLog(JSON.stringify(clozeArray));
             readTheClozeCards();
 
         }
@@ -187,7 +224,11 @@ function readTheCards() {
 function readTheClozeCards() {
     fs.readFile('cloze-log.txt', "utf8", function(error, data) {
 
+        var jsonContent = JSON.parse(data);
 
+        for (var i = 0; i < jsonContent.length; i++) {
+            console.log(jsonContent[i].partial);
+        }
     });
 };
 
