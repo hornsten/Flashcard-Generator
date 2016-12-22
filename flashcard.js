@@ -4,6 +4,8 @@ var inquirer = require("inquirer");
 var fs = require("fs"); //this is the file stream object
 var correct = 0;
 var wrong = 0;
+var cardArray = [];
+var clozeArray = [];
 // **********************************************************************
 
 function flashcards() {
@@ -13,24 +15,25 @@ function flashcards() {
             type: 'list',
             name: 'userType',
             message: 'What would you like to do?',
-            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge']
+            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge', 'experiment']
         }
 
     ]).then(function(choice) {
 
         if (choice.userType === 'create-basic-cards') {
-            createBasicCards();
+            readTheCards();
+
         } else if (choice.userType === 'create-cloze-cards') {
             createClozeCards();
         } else if (choice.userType === 'test-my-knowledge') {
             testMyKnowledge(0);
         } else if (choice.userType === 'test-my-cloze-knowledge') {
             testMyClozeKnowledge(0);
+        } else if (choice.userType === 'experiment') {
+            readTheCards();
         }
     });
 }
-
-var cardArray = [];
 
 function createBasicCards() {
 
@@ -50,8 +53,6 @@ function createBasicCards() {
     });
 
 };
-
-var clozeArray = [];
 
 function createClozeCards() {
 
@@ -157,10 +158,10 @@ function testMyClozeKnowledge(x) {
 };
 
 //function to append all the search results to log.txt
-function appendToLog(info) {
+function writeToLog(info) {
     var f = 'log.txt';
 
-    fs.appendFile(f, info, function(err) {
+    fs.writeFile(f, info, function(err) {
         if (err)
             console.error(err);
     });
@@ -188,9 +189,7 @@ function createAnotherCard() {
         if (user.makeMore) {
             createBasicCards();
         } else {
-            appendToLog(JSON.stringify(cardArray));
-
-            readTheCards();
+            writeToLog(JSON.stringify(cardArray));
 
         }
     })
@@ -215,10 +214,12 @@ function readTheCards() {
         var jsonContent = JSON.parse(data);
 
         for (var i = 0; i < jsonContent.length; i++) {
-            console.log(jsonContent[i].front);
+            cardArray.push(jsonContent[i]);
         }
 
     });
+
+    createBasicCards();
 };
 
 function readTheClozeCards() {
