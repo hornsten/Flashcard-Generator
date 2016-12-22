@@ -37,10 +37,10 @@ function createBasicCards() {
 
     }]).then(function(answers) {
 
-        var card = new SimpleCard(answers.front, answers.back);
+        var card = JSON.stringify(answers);
 
-        appendToLog(answers.front);
-        appendToLog(answers.back + "\n");
+        appendToLog(card + ",");
+        // readTheCards();
         createAnotherCard();
 
     });
@@ -81,11 +81,19 @@ function createAnotherCard() {
             createBasicCards();
         } else {
 
-            console.log('See ya!');
+            readTheCards();
 
         }
     })
 }
+
+function readTheCards() {
+    fs.readFile('log.txt', "utf8", function(error, data) {
+        console.log(data);
+
+    });
+};
+
 
 flashcards();
 
