@@ -2,6 +2,8 @@ var SimpleCard = require("./Simple");
 var Cloze = require("./Cloze");
 var inquirer = require("inquirer");
 var fs = require("fs"); //this is the file stream object
+var correct = 0;
+var wrong = 0;
 // **********************************************************************
 
 function flashcards() {
@@ -21,7 +23,7 @@ function flashcards() {
         } else if (choice.userType === 'create-cloze-cards') {
             createClozeCards();
         } else if (choice.userType === 'test-my-knowledge') {
-            testMyKnowledge();
+            testMyKnowledge(0);
         }
     });
 }
@@ -79,9 +81,43 @@ function createClozeCards() {
     });
 };
 
-function testMyKnowledge() {
-    readTheCards();
-}
+function testMyKnowledge(x) {
+
+    fs.readFile('log.txt', "utf8", function(error, data) {
+
+        var jsonContent = JSON.parse(data);
+
+
+        if (x < jsonContent.length) {
+
+            inquirer.prompt([{
+                name: "question",
+                message: jsonContent[x].front
+
+            }]).then(function(answers) {
+
+                if (answers.question.toLowerCase().indexOf(jsonContent[x].back.toLowerCase()) > -1) {
+                    console.log('Correct!');
+                    correct++;
+                    x++;
+                    testMyKnowledge(x);
+                } else {
+                    console.log('Incorrect. The correct answer is ' + jsonContent[x].back);
+                    wrong++;
+                    x++;
+                    testMyKnowledge(x);
+                }
+
+            })
+
+        } else {
+            console.log('Here\'s how you did: ');
+            console.log('correct: ' + correct);
+            console.log('wrong: ' + wrong);
+
+        }
+    });
+};
 
 //function to append all the search results to log.txt
 function appendToLog(info) {
@@ -135,7 +171,6 @@ function createAnotherClozeCard() {
         }
     })
 }
-
 
 function readTheCards() {
     fs.readFile('log.txt', "utf8", function(error, data) {
