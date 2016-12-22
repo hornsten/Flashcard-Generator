@@ -26,6 +26,8 @@ function flashcards() {
     });
 }
 
+var cardArray = [];
+
 function createBasicCards() {
 
     inquirer.prompt([{
@@ -36,10 +38,13 @@ function createBasicCards() {
         message: "Enter Back of Card: "
 
     }]).then(function(answers) {
+        var card = new SimpleCard(answers.front, answers.back);
 
-        var card = JSON.stringify(answers);
+        cardArray.push(card);
 
-        appendToLog(card + ",");
+        // var card = JSON.stringify(answers, null, ' ');
+
+        // appendToLog(card + ",");
         // readTheCards();
         createAnotherCard();
 
@@ -65,7 +70,7 @@ function createClozeCards() {
 
     }]).then(function(answers) {
 
-        var card = JSON.stringify(answers);
+        var card = JSON.stringify(answers, null, ' ');
 
         appendToClozeLog(card + ",");
         // readTheCards();
@@ -75,7 +80,7 @@ function createClozeCards() {
 };
 
 function testMyKnowledge() {
-    console.log('Preliminary testing reveals that you need more flashcards');
+    readTheCards();
 }
 
 //function to append all the search results to log.txt
@@ -110,6 +115,7 @@ function createAnotherCard() {
         if (user.makeMore) {
             createBasicCards();
         } else {
+            appendToLog(JSON.stringify(cardArray));
 
             readTheCards();
 
@@ -133,14 +139,17 @@ function createAnotherClozeCard() {
 
 function readTheCards() {
     fs.readFile('log.txt', "utf8", function(error, data) {
-        console.log(data);
+
+        var myArray = data;
+
+        console.log(myArray);
 
     });
 };
 
 function readTheClozeCards() {
     fs.readFile('cloze-log.txt', "utf8", function(error, data) {
-        console.log(data);
+
 
     });
 };

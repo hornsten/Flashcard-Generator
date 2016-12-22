@@ -1,1 +1,16 @@
-{"partial":"Christmas is in the month of [cloze].","cloze":"December"},{"partial":"An elephant never [cloze].","cloze":"forgets"},{"partial":"A [cloze] in time saves nine.","cloze":"stitch"},{"partial":"Peter Piper [cloze] a peck of pickled peppers.","cloze":"picked"},{"partial":"My favorite reindeer is [cloze]","cloze":"Rudolph"},
+{
+"partial":"Christmas is in the month of [cloze].",
+"cloze":"December"
+},{
+"partial":"An elephant never [cloze].",
+"cloze":"forgets"
+},{
+"partial":"A [cloze] in time saves nine.",
+"cloze":"stitch"
+},{
+"partial":"Peter Piper [cloze] a peck of pickled peppers.",
+"cloze":"picked"
+},{
+"partial":"My favorite reindeer is [cloze]",
+"cloze":"Rudolph"
+},
