@@ -140,9 +140,11 @@ function createAnotherClozeCard() {
 function readTheCards() {
     fs.readFile('log.txt', "utf8", function(error, data) {
 
-        var myArray = data;
+        var jsonContent = JSON.parse(data);
 
-        console.log(myArray);
+        for (var i = 0; i < jsonContent.length; i++) {
+            console.log(jsonContent[i].front);
+        }
 
     });
 };
