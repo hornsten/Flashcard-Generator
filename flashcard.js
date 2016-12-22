@@ -15,22 +15,19 @@ function flashcards() {
             type: 'list',
             name: 'userType',
             message: 'What would you like to do?',
-            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge', 'experiment']
+            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge']
         }
 
     ]).then(function(choice) {
 
         if (choice.userType === 'create-basic-cards') {
-            readTheCards();
-
+            addToCards();
         } else if (choice.userType === 'create-cloze-cards') {
-            createClozeCards();
+            addToClozeCards();
         } else if (choice.userType === 'test-my-knowledge') {
             testMyKnowledge(0);
         } else if (choice.userType === 'test-my-cloze-knowledge') {
             testMyClozeKnowledge(0);
-        } else if (choice.userType === 'experiment') {
-            readTheCards();
         }
     });
 }
@@ -167,10 +164,10 @@ function writeToLog(info) {
     });
 }
 
-function appendToClozeLog(info) {
+function writeToClozeLog(info) {
     var f = 'cloze-log.txt';
 
-    fs.appendFile(f, info, function(err) {
+    fs.writeFile(f, info, function(err) {
         if (err)
             console.error(err);
     });
@@ -201,14 +198,12 @@ function createAnotherClozeCard() {
         if (user.makeMore) {
             createClozeCards();
         } else {
-            appendToClozeLog(JSON.stringify(clozeArray));
-            readTheClozeCards();
-
+            writeToClozeLog(JSON.stringify(clozeArray));
         }
     })
 }
 
-function readTheCards() {
+function addToCards() {
     fs.readFile('log.txt', "utf8", function(error, data) {
 
         var jsonContent = JSON.parse(data);
@@ -222,23 +217,17 @@ function readTheCards() {
     createBasicCards();
 };
 
-function readTheClozeCards() {
+function addToClozeCards() {
     fs.readFile('cloze-log.txt', "utf8", function(error, data) {
 
         var jsonContent = JSON.parse(data);
 
         for (var i = 0; i < jsonContent.length; i++) {
-            console.log(jsonContent[i].partial);
+            clozeArray.push(jsonContent[i]);
         }
     });
+    createClozeCards();
 };
 
 
 flashcards();
-
-// var card3 = new SimpleCard('In Greek mythology, who was the queen of the underworld and wife of Hades?', 'Persephone');
-// var card5 = new Cloze('According to legend, a unicorn\'s horn is white at the base, [cloze] in the middle and red at the tip', 'black');
-
-// card3.printCard();
-
-// card5.printFull();
