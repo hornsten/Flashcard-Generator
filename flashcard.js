@@ -35,6 +35,7 @@ function flashcards() {
 }
 //***************************************** Functions *********************************
 function addToCards() {
+    //This grabs any previously created cards and saves them to a new array...
     fs.readFile('log.txt', "utf8", function(error, data) {
 
         var jsonContent = JSON.parse(data);
@@ -44,11 +45,13 @@ function addToCards() {
         }
 
     });
-
+    //...So that new cards and old can be combined into a single array
     createBasicCards();
 };
 
 function addToClozeCards() {
+    //This grabs any previously created cloze cards and saves them to a new array...
+
     fs.readFile('cloze-log.txt', "utf8", function(error, data) {
 
         var jsonContent = JSON.parse(data);
@@ -57,6 +60,7 @@ function addToClozeCards() {
             clozeArray.push(jsonContent[i]);
         }
     });
+    //...So that new cards and old can be combined into a single array
     createClozeCards();
 };
 
@@ -71,6 +75,7 @@ function createBasicCards() {
 
     }]).then(function(answers) {
         var card = new SimpleCard(answers.front, answers.back);
+
         cardArray.push(card);
         createAnotherCard();
 
@@ -82,7 +87,7 @@ function createClozeCards() {
 
     inquirer.prompt([{
         name: "partial",
-        message: "Enter the partial sentence, replacing the missing word using the following format: 'I cannot tell a [cloze]': ",
+        message: "Enter a partial sentence using the following format: 'I cannot tell a [cloze]': ",
         validate: function(value) {
 
             if (value.indexOf('[cloze]') > -1) {
@@ -92,7 +97,7 @@ function createClozeCards() {
         }
     }, {
         name: "cloze",
-        message: "Enter the missing word: "
+        message: "Enter the omitted word: "
 
     }]).then(function(answers) {
 
@@ -110,22 +115,23 @@ function basicQuiz(x) {
 
         var jsonContent = JSON.parse(data);
 
-
         if (x < jsonContent.length) {
+
+            var gameCard = new SimpleCard(jsonContent[x].front, jsonContent[x].back);
 
             inquirer.prompt([{
                 name: "question",
-                message: jsonContent[x].front
+                message: gameCard.front
 
             }]).then(function(answers) {
 
-                if (answers.question.toLowerCase().indexOf(jsonContent[x].back.toLowerCase()) > -1) {
+                if (answers.question.toLowerCase().indexOf(gameCard.back.toLowerCase()) > -1) {
                     console.log('Correct!');
                     correct++;
                     x++;
                     basicQuiz(x);
                 } else {
-                    console.log('Incorrect. The correct answer is ' + jsonContent[x].back);
+                    gameCard.printBack();
                     wrong++;
                     x++;
                     basicQuiz(x);
@@ -140,7 +146,6 @@ function basicQuiz(x) {
             correct = 0;
             wrong = 0;
             flashcards();
-
         }
     });
 };
@@ -151,22 +156,24 @@ function clozeQuiz(x) {
 
         var jsonContent = JSON.parse(data);
 
-
         if (x < jsonContent.length) {
+
+            var clozeCard = new Cloze(jsonContent[x].partial, jsonContent[x].cloze);
 
             inquirer.prompt([{
                 name: "question",
-                message: jsonContent[x].partial
+                message: clozeCard.partial
 
             }]).then(function(answers) {
 
-                if (answers.question.toLowerCase().indexOf(jsonContent[x].cloze.toLowerCase()) > -1) {
+                if (answers.question.toLowerCase().indexOf(clozeCard.cloze.toLowerCase()) > -1) {
                     console.log('Correct!');
                     correct++;
                     x++;
                     clozeQuiz(x);
                 } else {
-                    console.log('Incorrect. The correct answer is ' + jsonContent[x].cloze);
+                    console.log('WRONG.');
+                    clozeCard.printFull();
                     wrong++;
                     x++;
                     clozeQuiz(x);
