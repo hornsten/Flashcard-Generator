@@ -6,7 +6,7 @@ var correct = 0;
 var wrong = 0;
 var cardArray = [];
 var clozeArray = [];
-// **********************************************************************
+// ********************************* Main Process *************************************
 
 function flashcards() {
 
@@ -15,7 +15,7 @@ function flashcards() {
             type: 'list',
             name: 'userType',
             message: 'What would you like to do?',
-            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge', 'quit']
+            choices: ['create-basic-cards', 'create-cloze-cards', 'basic-quiz', 'cloze-quiz', 'quit']
         }
 
     ]).then(function(choice) {
@@ -24,15 +24,41 @@ function flashcards() {
             addToCards();
         } else if (choice.userType === 'create-cloze-cards') {
             addToClozeCards();
-        } else if (choice.userType === 'test-my-knowledge') {
-            testMyKnowledge(0);
-        } else if (choice.userType === 'test-my-cloze-knowledge') {
-            testMyClozeKnowledge(0);
+        } else if (choice.userType === 'basic-quiz') {
+            basicQuiz(0);
+        } else if (choice.userType === 'cloze-quiz') {
+            clozeQuiz(0);
         } else if (choice.userType === 'quit') {
             console.log('Thanks for playing!');
         }
     });
 }
+//***************************************** Functions *********************************
+function addToCards() {
+    fs.readFile('log.txt', "utf8", function(error, data) {
+
+        var jsonContent = JSON.parse(data);
+
+        for (var i = 0; i < jsonContent.length; i++) {
+            cardArray.push(jsonContent[i]);
+        }
+
+    });
+
+    createBasicCards();
+};
+
+function addToClozeCards() {
+    fs.readFile('cloze-log.txt', "utf8", function(error, data) {
+
+        var jsonContent = JSON.parse(data);
+
+        for (var i = 0; i < jsonContent.length; i++) {
+            clozeArray.push(jsonContent[i]);
+        }
+    });
+    createClozeCards();
+};
 
 function createBasicCards() {
 
@@ -78,7 +104,7 @@ function createClozeCards() {
     });
 };
 
-function testMyKnowledge(x) {
+function basicQuiz(x) {
 
     fs.readFile('log.txt', "utf8", function(error, data) {
 
@@ -97,12 +123,12 @@ function testMyKnowledge(x) {
                     console.log('Correct!');
                     correct++;
                     x++;
-                    testMyKnowledge(x);
+                    basicQuiz(x);
                 } else {
                     console.log('Incorrect. The correct answer is ' + jsonContent[x].back);
                     wrong++;
                     x++;
-                    testMyKnowledge(x);
+                    basicQuiz(x);
                 }
 
             })
@@ -119,7 +145,7 @@ function testMyKnowledge(x) {
     });
 };
 
-function testMyClozeKnowledge(x) {
+function clozeQuiz(x) {
 
     fs.readFile('cloze-log.txt', "utf8", function(error, data) {
 
@@ -138,12 +164,12 @@ function testMyClozeKnowledge(x) {
                     console.log('Correct!');
                     correct++;
                     x++;
-                    testMyClozeKnowledge(x);
+                    clozeQuiz(x);
                 } else {
                     console.log('Incorrect. The correct answer is ' + jsonContent[x].cloze);
                     wrong++;
                     x++;
-                    testMyClozeKnowledge(x);
+                    clozeQuiz(x);
                 }
 
             })
@@ -177,6 +203,7 @@ function writeToClozeLog(info) {
             console.error(err);
     });
 }
+
 var makeMore = {
     //Prompt to find out if user wants to play again before exiting program (default is yes)
     type: 'confirm',
@@ -197,7 +224,6 @@ function createAnotherCard() {
     })
 }
 
-
 function createAnotherClozeCard() {
     //Prompts user to go again, then either restarts or exits program
     inquirer.prompt(makeMore).then(function(user) {
@@ -209,32 +235,5 @@ function createAnotherClozeCard() {
         }
     })
 }
-
-function addToCards() {
-    fs.readFile('log.txt', "utf8", function(error, data) {
-
-        var jsonContent = JSON.parse(data);
-
-        for (var i = 0; i < jsonContent.length; i++) {
-            cardArray.push(jsonContent[i]);
-        }
-
-    });
-
-    createBasicCards();
-};
-
-function addToClozeCards() {
-    fs.readFile('cloze-log.txt', "utf8", function(error, data) {
-
-        var jsonContent = JSON.parse(data);
-
-        for (var i = 0; i < jsonContent.length; i++) {
-            clozeArray.push(jsonContent[i]);
-        }
-    });
-    createClozeCards();
-};
-
 
 flashcards();
