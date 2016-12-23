@@ -10,12 +10,11 @@ var Cloze = function(partial, cloze) {
         console.log(this.partial);
     }
 
-    this.printFull = function() {
-        var answer = this.partial.replace('[cloze]', this.cloze);
-        console.log(answer);
-
-    }
 }
+
+Cloze.prototype.printFull = function() {
+    return this.partial.replace('[cloze]', this.cloze);
+};
 
 var card4 = new Cloze('A half man, half tiger is called a [cloze]', 'liger');
 

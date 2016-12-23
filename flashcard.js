@@ -15,7 +15,7 @@ function flashcards() {
             type: 'list',
             name: 'userType',
             message: 'What would you like to do?',
-            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge']
+            choices: ['create-basic-cards', 'create-cloze-cards', 'test-my-knowledge', 'test-my-cloze-knowledge', 'quit']
         }
 
     ]).then(function(choice) {
@@ -28,6 +28,8 @@ function flashcards() {
             testMyKnowledge(0);
         } else if (choice.userType === 'test-my-cloze-knowledge') {
             testMyClozeKnowledge(0);
+        } else if (choice.userType === 'quit') {
+            console.log('Thanks for playing!');
         }
     });
 }
@@ -43,7 +45,6 @@ function createBasicCards() {
 
     }]).then(function(answers) {
         var card = new SimpleCard(answers.front, answers.back);
-
         cardArray.push(card);
         createAnotherCard();
 
@@ -70,7 +71,6 @@ function createClozeCards() {
     }]).then(function(answers) {
 
         var card = new Cloze(answers.partial, answers.cloze);
-
         clozeArray.push(card);
 
         createAnotherClozeCard();
@@ -111,6 +111,9 @@ function testMyKnowledge(x) {
             console.log('Here\'s how you did: ');
             console.log('correct: ' + correct);
             console.log('wrong: ' + wrong);
+            correct = 0;
+            wrong = 0;
+            flashcards();
 
         }
     });
@@ -149,7 +152,9 @@ function testMyClozeKnowledge(x) {
             console.log('Here\'s how you did: ');
             console.log('correct: ' + correct);
             console.log('wrong: ' + wrong);
-
+            correct = 0;
+            wrong = 0;
+            flashcards();
         }
     });
 };
@@ -181,16 +186,17 @@ var makeMore = {
 }
 
 function createAnotherCard() {
-    //Prompts user to go again, then either restarts or exits program
+    //Prompts user to make more cards or do something else
     inquirer.prompt(makeMore).then(function(user) {
         if (user.makeMore) {
             createBasicCards();
         } else {
             writeToLog(JSON.stringify(cardArray));
-
+            flashcards();
         }
     })
 }
+
 
 function createAnotherClozeCard() {
     //Prompts user to go again, then either restarts or exits program
@@ -199,6 +205,7 @@ function createAnotherClozeCard() {
             createClozeCards();
         } else {
             writeToClozeLog(JSON.stringify(clozeArray));
+            flashcards();
         }
     })
 }
