@@ -50,6 +50,7 @@ function addToCards() {
 };
 
 function addToClozeCards() {
+
     cardArray = [];
     //This grabs any previously created cloze cards and saves them to a new array...
 
@@ -119,7 +120,14 @@ function basicQuiz(x) {
 
             inquirer.prompt([{
                 name: "question",
-                message: gameCard.front
+                message: gameCard.front,
+                validate: function(value) {
+
+                    if (value.length > 0) {
+                        return true;
+                    }
+                    return 'Come on, at least take a guess!';
+                }
 
             }]).then(function(answers) {
 
@@ -160,7 +168,14 @@ function clozeQuiz(x) {
 
             inquirer.prompt([{
                 name: "question",
-                message: clozeCard.message
+                message: clozeCard.message,
+                validate: function(value) {
+
+                    if (value.length > 0) {
+                        return true;
+                    }
+                    return 'Come on, at least take a guess!';
+                }
 
             }]).then(function(answers) {
 
