@@ -5,7 +5,6 @@ var fs = require("fs"); //this is the file stream object
 var correct = 0;
 var wrong = 0;
 var cardArray = [];
-var clozeArray = [];
 // ********************************* Main Process *************************************
 
 function flashcards() {
@@ -35,6 +34,7 @@ function flashcards() {
 }
 //***************************************** Functions *********************************
 function addToCards() {
+    cardArray = [];
     //This grabs any previously created cards and saves them to a new array...
     fs.readFile('log.txt', "utf8", function(error, data) {
 
@@ -50,6 +50,7 @@ function addToCards() {
 };
 
 function addToClozeCards() {
+    cardArray = [];
     //This grabs any previously created cloze cards and saves them to a new array...
 
     fs.readFile('cloze-log.txt', "utf8", function(error, data) {
@@ -57,7 +58,7 @@ function addToClozeCards() {
         var jsonContent = JSON.parse(data);
 
         for (var i = 0; i < jsonContent.length; i++) {
-            clozeArray.push(jsonContent[i]);
+            cardArray.push(jsonContent[i]);
         }
     });
     //...So that new cards and old can be combined into a single array
@@ -86,23 +87,20 @@ function createBasicCards() {
 function createClozeCards() {
 
     inquirer.prompt([{
-        name: "partial",
-        message: "Enter a partial sentence using the following format: 'I cannot tell a [cloze]': ",
+        name: "text",
+        message: "Enter a sentence, putting the word you want to hide in parentheses, like this: 'I cannot tell a (lie)'",
         validate: function(value) {
-
-            if (value.indexOf('[cloze]') > -1) {
+            var parentheses = /\(\w.+\)/;
+            if (value.search(parentheses) > -1) {
                 return true;
             }
-            return 'Please replace a word in the sentence with "[cloze]"'
+            return 'Please put a word in your sentence in parentheses'
         }
-    }, {
-        name: "cloze",
-        message: "Enter the omitted word: "
 
     }]).then(function(answers) {
 
-        var card = new Cloze(answers.partial, answers.cloze);
-        clozeArray.push(card);
+        var card = new Cloze(answers.text);
+        cardArray.push(card);
 
         createAnotherClozeCard();
 
@@ -158,11 +156,11 @@ function clozeQuiz(x) {
 
         if (x < jsonContent.length) {
 
-            var clozeCard = new Cloze(jsonContent[x].partial, jsonContent[x].cloze);
+            var clozeCard = new Cloze(jsonContent[x].text, jsonContent[x].cloze);
 
             inquirer.prompt([{
                 name: "question",
-                message: clozeCard.partial
+                message: clozeCard.message
 
             }]).then(function(answers) {
 
@@ -172,7 +170,7 @@ function clozeQuiz(x) {
                     x++;
                     clozeQuiz(x);
                 } else {
-                    console.log('WRONG.');
+                    console.log('Incorrect. Here is the full sentence: ');
                     clozeCard.printFull();
                     wrong++;
                     x++;
@@ -237,7 +235,7 @@ function createAnotherClozeCard() {
         if (user.makeMore) {
             createClozeCards();
         } else {
-            writeToClozeLog(JSON.stringify(clozeArray));
+            writeToClozeLog(JSON.stringify(cardArray));
             flashcards();
         }
     })
