@@ -12,7 +12,7 @@ Simple.prototype.printFront = function() {
 }
 
 Simple.prototype.printAnswer = function() {
-    console.log('The correct answer is ' + this.back + '.');
+    console.log('Sorry, the correct answer is ' + this.back + '.');
 }
 
 module.exports = Simple;
