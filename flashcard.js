@@ -1,7 +1,7 @@
 var SimpleCard = require("./Simple");
 var Cloze = require("./Cloze");
 var inquirer = require("inquirer");
-var fs = require("fs"); //this is the file stream object
+var fs = require("fs");
 var correct = 0;
 var wrong = 0;
 var cardArray = [];
