@@ -21,7 +21,7 @@ Tea bags were invented in 1908 in the United States by (Thomas Sullivan).
 The most popular type of tea is (black) tea.
 
 ##Taking a quiz
-It is also easy to quiz yourself using the flashcards you created.  Choose the 'basic-quiz' or 'cloze-quiz', depending which set of cards you'd like to access. The basic quiz will present the front of your card and allow you to type in the answer.  The cloze quiz will present your cloze cards with a blank replacing the hidden word/s.  In both cases, the program will let you know whether each answer was correct and tally your score at the end.  
+It is also easy to quiz yourself using the flashcards you created.  Choose the 'basic-quiz' or 'cloze-quiz' option, depending which set of cards you'd like to access. The basic quiz will present the front of your card and allow you to type in the answer.  The cloze quiz will present your cloze cards with a blank replacing the hidden word/s.  In both cases, the program will let you know whether each answer was correct and tally your score at the end.  
 
 ##Dependencies
 This app was created using inquirer.js and node.js File System (fs).  Flashcards.js serves as the entry point for the app.  Constructors and methods for the two types of cards are exported from the files simple.js and cloze.js.  Each of the constructor modules provides methods not only for creating the cards, but also for displaying information during the quiz.
