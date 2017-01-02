@@ -1,13 +1,13 @@
-# Flashcard-Generator
+# Flashcard-Generator :card_index:
 This Flashcard Generator is designed to be user-friendly.  Open node flashcards.js in your command line, and the CLI will guide you through the process of creating both simple and cloze-deleted flashcards.  Your cards will be saved into log.txt and cloze-log.txt, respectively.  The Flashcard Generator also allows you to quiz yourself using the cards you created.
 
 ## Table of contents
 
 - [Creating a Simple Flashcard](#creating-a-simple-flashcard)
-- [Creating a Cloze Flashcard](#Creating a Cloze Flashcard)
-- [Taking a quiz](#Taking a quiz)
-- [Dependencies](#Dependencies)
-- [Next Steps](#Next Steps)
+- [Creating a Cloze Flashcard](#creating-a-cloze-flashcard)
+- [Taking a quiz](#taking-a-quiz)
+- [Dependencies](#dependencies)
+- [Next Steps](#next-steps)
 
 
 ##Creating a Simple Flashcard
