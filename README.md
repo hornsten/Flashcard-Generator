@@ -1,7 +1,7 @@
 # Flashcard-Generator :card_index:
 This Flashcard Generator is designed to be user-friendly.  Open node flashcards.js in your command line, and the CLI will guide you through the process of creating both simple and cloze-deleted flashcards.  Your cards will be saved into log.txt and cloze-log.txt, respectively.  The Flashcard Generator also allows you to quiz yourself using the cards you created.
 
-## Table of contents
+## Table of Contents
 
 - [Creating a Simple Flashcard](#creating-a-simple-flashcard)
 - [Creating a Cloze Flashcard](#creating-a-cloze-flashcard)
@@ -20,7 +20,7 @@ Tea bags were invented in 1908 in the United States by (Thomas Sullivan).
 
 The most popular type of tea is (black) tea.
 
-##Taking a quiz
+##Taking a Quiz
 It is also easy to quiz yourself using the flashcards you created.  Choose the 'basic-quiz' or 'cloze-quiz' option, depending which set of cards you'd like to access. The basic quiz will present the front of your card and allow you to type in the answer.  The cloze quiz will present your cloze cards with a blank replacing the hidden word/s.  In both cases, the program will let you know whether each answer was correct and tally your score at the end.  
 
 ##Dependencies
